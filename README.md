@@ -10,16 +10,16 @@ A lightweight in-memory data store server with a CLI client with interactive mod
 
 - **High Performance**:
 
-    - **Fast Access**: Data retrieval and manipulation happen in constant time _O(1)_ regardless of data size, offering exceptional speed for frequent lookups.
-    - **Low Latency**: Ideal for applications requiring rapid data access with minimal delay.
+  - **Fast Access**: Data retrieval and manipulation happen in constant time _O(1)_ regardless of data size, offering exceptional speed for frequent lookups.
+  - **Low Latency**: Ideal for applications requiring rapid data access with minimal delay.
 
 - **Versatility**:
 
-    - **Beyond Key-Value Store**: Functions effectively as a cache, session store, and message broker, enhancing application performance and enabling communication between services.
+  - **Beyond Key-Value Store**: Functions effectively as a cache, and session store, enhancing application performance and enabling communication between services.
 
 - **In-Memory Storage**:
 
-    - **Faster Operations**: Leverages RAM for significantly faster read/write speeds compared to traditional disk-based storage.
+  - **Faster Operations**: Leverages RAM for significantly faster read/write speeds compared to traditional disk-based storage.
 
 ### Considerations
 
