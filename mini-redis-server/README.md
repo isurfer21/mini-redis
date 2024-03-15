@@ -27,3 +27,21 @@ With custom setting, run this command
 ```sh
 npm start -- -h localhost -p 8000
 ```
+
+## Usage
+
+Here is a sample API requests using `curl`
+
+```sh
+# PING
+curl -X GET http://localhost:8080/ping
+
+# SET foo 'bar'
+curl -X POST -d 'value=bar' http://localhost:8080/set/foo
+
+# GET foo
+curl -X GET http://localhost:8080/get/foo
+
+# DEL foo
+curl -X GET http://localhost:8080/del/foo
+```
