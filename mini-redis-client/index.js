@@ -1,6 +1,6 @@
-import axios from "axios";
 import minimist from "minimist";
 import readline from "readline";
+import miniRedis from "./lib/mini-redis-sdk.js";
 
 const argv = minimist(process.argv.slice(2));
 
@@ -16,11 +16,22 @@ Options:
      --help    Display help menu
     `);
 } else {
-  const host = argv.h || argv.host || "0.0.0.0";
-  const port = argv.p || argv.port || 8080;
+  const host = argv.h || argv.host;
+  const port = argv.p || argv.port;
 
-  const baseAddress = `${host}:${port}`;
-  const baseUrl = `http://${baseAddress}`;
+  const client = miniRedis.createClient({
+    host: host,
+    port: port,
+  });
+
+  try {
+    await client.connect();
+  } catch (error) {
+    console.error(error.message);
+    process.exit(1);
+  }
+
+  const baseAddress = client.hostname;
   const breakpoint = /("[^"]*"|'[^']*'|\S+)/g;
 
   const prompt = readline.createInterface({
@@ -43,10 +54,10 @@ Options:
             break;
           }
           try {
-            const response = await axios.get(`${baseUrl}/ping`);
-            console.log(response.data);
+            const response = await client.ping();
+            console.log(response);
           } catch (error) {
-            console.error("Error:", error);
+            console.error(error.message);
           }
           break;
         case "GET":
@@ -58,10 +69,10 @@ Options:
           }
           try {
             const key = args.shift();
-            const response = await axios.get(`${baseUrl}/get/${key}`);
-            console.log(response.data);
+            const response = await client.get(key);
+            console.log(response);
           } catch (error) {
-            console.error("Error:", error);
+            console.error(error.message);
           }
           break;
         case "SET":
@@ -74,13 +85,10 @@ Options:
           try {
             const key = args.shift();
             const value = args.shift();
-            const response = await axios.post(
-              `${baseUrl}/set/${key}`,
-              `value=${JSON.stringify(value)}`,
-            );
-            console.log(response.data);
+            const response = await client.set(key, value);
+            console.log(response);
           } catch (error) {
-            console.error("Error:", error);
+            console.error(error.message);
           }
           break;
         case "DEL":
@@ -92,10 +100,10 @@ Options:
           }
           try {
             const key = args.shift();
-            const response = await axios.delete(`${baseUrl}/del/${key}`);
-            console.log(response.data);
+            const response = await client.del(key);
+            console.log(response);
           } catch (error) {
-            console.error("Error:", error);
+            console.error(error.message);
           }
           break;
         default:
