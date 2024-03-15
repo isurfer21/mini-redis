@@ -49,7 +49,7 @@ Options:
         case "PING":
           if (args.length != 0) {
             console.log(
-              `(error) ERR wrong number of arguments for 'get' command`,
+              `(error) ERR wrong number of arguments for 'ping' command`,
             );
             break;
           }
@@ -94,7 +94,7 @@ Options:
         case "DEL":
           if (args.length != 1) {
             console.log(
-              `(error) ERR wrong number of arguments for 'get' command`,
+              `(error) ERR wrong number of arguments for 'del' command`,
             );
             break;
           }

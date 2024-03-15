@@ -26,6 +26,9 @@ class MiniRedis {
     }
   }
   async get(key) {
+    if (!key) {
+      throw new Error(`(error) ERR missing argument 'key'`);
+    }
     try {
       const response = await axios.get(`${this.baseUrl}/get/${key}`);
       return response.data;
@@ -34,6 +37,12 @@ class MiniRedis {
     }
   }
   async set(key, value) {
+    if (!key) {
+      throw new Error(`(error) ERR missing argument 'key'`);
+    }
+    if (!value) {
+      throw new Error(`(error) ERR missing argument 'value'`);
+    }
     try {
       const response = await axios.post(
         `${this.baseUrl}/set/${key}`,
@@ -45,6 +54,9 @@ class MiniRedis {
     }
   }
   async del(key) {
+    if (!key) {
+      throw new Error(`(error) ERR missing argument 'key'`);
+    }
     try {
       const response = await axios.delete(`${this.baseUrl}/del/${key}`);
       return response.data;
