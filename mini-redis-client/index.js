@@ -92,7 +92,7 @@ Options:
           }
           try {
             const key = args.shift();
-            const response = await axios.get(`${baseUrl}/del/${key}`);
+            const response = await axios.delete(`${baseUrl}/del/${key}`);
             console.log(response.data);
           } catch (error) {
             console.error("Error:", error);

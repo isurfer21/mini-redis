@@ -45,7 +45,7 @@ Options:
     res.send("Ok");
   });
 
-  app.get("/del/:key", async (req, res) => {
+  app.delete("/del/:key", async (req, res) => {
     console.log(`${timestamp()} DEL ${req.params.key}`);
     delete storage[req.params.key];
     res.send("(integer) 1");

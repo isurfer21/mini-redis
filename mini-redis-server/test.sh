@@ -9,4 +9,6 @@ echo "GET foo"
 curl -X GET http://localhost:8080/get/foo
 echo
 echo "DEL foo"
-curl -X GET http://localhost:8080/del/foo
+curl -X DELETE http://localhost:8080/del/foo
+echo
+exit
