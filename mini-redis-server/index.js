@@ -41,8 +41,12 @@ Options:
 
   app.post("/set/:key", async (req, res) => {
     console.log(`${timestamp()} SET ${req.params.key}=${req.body.value}`);
-    storage[req.params.key] = req.body.value;
-    res.send("Ok");
+    if (!req.body.value) {
+      res.status(403).send("(error) ERR parameter 'value' is missing");
+    } else {
+      storage[req.params.key] = req.body.value;
+      res.send("Ok");
+    }
   });
 
   app.delete("/del/:key", async (req, res) => {
