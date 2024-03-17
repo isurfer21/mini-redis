@@ -1,6 +1,26 @@
 import minimist from "minimist";
 import readline from "readline";
-import miniRedis from "./lib/mini-redis-sdk.js";
+import { miniredis } from "mini-redis-sdk";
+
+const trimQuotes = (str) => {
+  const trimmedStr = str.trim();
+
+  if (trimmedStr.length <= 1) {
+    return trimmedStr;
+  }
+
+  const firstChar = trimmedStr[0];
+  const lastChar = trimmedStr[trimmedStr.length - 1];
+
+  if (
+    (firstChar === '"' && lastChar === '"') ||
+    (firstChar === "'" && lastChar === "'")
+  ) {
+    return trimmedStr.slice(1, -1);
+  }
+
+  return trimmedStr;
+};
 
 const argv = minimist(process.argv.slice(2));
 
@@ -19,7 +39,7 @@ Options:
   const host = argv.h || argv.host;
   const port = argv.p || argv.port;
 
-  const client = miniRedis.createClient({
+  const client = miniredis.createClient({
     host: host,
     port: port,
   });
@@ -68,7 +88,7 @@ Options:
             break;
           }
           try {
-            const key = args.shift();
+            const key = trimQuotes(args.shift());
             const response = await client.get(key);
             console.log(response);
           } catch (error) {
@@ -83,8 +103,8 @@ Options:
             break;
           }
           try {
-            const key = args.shift();
-            const value = args.shift();
+            const key = trimQuotes(args.shift());
+            const value = trimQuotes(args.shift());
             const response = await client.set(key, value);
             console.log(response);
           } catch (error) {
@@ -99,7 +119,7 @@ Options:
             break;
           }
           try {
-            const key = args.shift();
+            const key = trimQuotes(args.shift());
             const response = await client.del(key);
             console.log(response);
           } catch (error) {

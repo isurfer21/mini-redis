@@ -1,6 +1,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import minimist from "minimist";
+import { resp } from "mini-redis-sdk";
 
 const argv = minimist(process.argv.slice(2));
 const storage = {};
@@ -30,29 +31,56 @@ Options:
 
   app.get("/ping", async (req, res) => {
     console.log(`${timestamp()} PING`);
-    res.send("PONG");
+    res.send(resp.serialize("PONG"));
   });
 
-  app.get("/get/:key", async (req, res) => {
-    console.log(`${timestamp()} GET ${req.params.key}`);
-    const value = storage[req.params.key] || "(nil)";
-    res.send(value);
-  });
-
-  app.post("/set/:key", async (req, res) => {
-    console.log(`${timestamp()} SET ${req.params.key}=${req.body.value}`);
-    if (!req.body.value) {
-      res.status(403).send("(error) ERR parameter 'value' is missing");
-    } else {
-      storage[req.params.key] = req.body.value;
-      res.send("Ok");
+  app.get("/get", async (req, res) => {
+    console.log(`${timestamp()} GET ${req.query.key}`);
+    try {
+      if (!req.query.key) {
+        throw new Error("parameter 'key' is missing");
+      }
+      const key = resp.deserialize(req.query.key);
+      const value = storage[key] || null;
+      res.send(resp.serialize(value));
+    } catch (err) {
+      console.log(err.message);
+      res.status(400).send(resp.error(err));
     }
   });
 
-  app.delete("/del/:key", async (req, res) => {
-    console.log(`${timestamp()} DEL ${req.params.key}`);
-    delete storage[req.params.key];
-    res.send("(integer) 1");
+  app.post("/set", async (req, res) => {
+    console.log(`${timestamp()} SET ${req.body.key}=${req.body.value}`);
+    try {
+      if (!req.body.key) {
+        throw new Error("parameter 'key' is missing");
+      }
+      const key = resp.deserialize(req.body.key);
+      if (!req.body.value) {
+        throw new Error("parameter 'value' is missing");
+      }
+      const value = resp.deserialize(req.body.value);
+      storage[key] = value || null;
+      res.send(resp.serialize("Ok"));
+    } catch (err) {
+      console.log(err.message);
+      res.status(400).send(resp.error(err));
+    }
+  });
+
+  app.delete("/del", async (req, res) => {
+    console.log(`${timestamp()} DEL ${req.query.key}`);
+    try {
+      if (!req.query.key) {
+        throw new Error("parameter 'key' is missing");
+      }
+      const key = resp.deserialize(req.query.key);
+      delete storage[key];
+      res.send(resp.serialize(1));
+    } catch (err) {
+      console.log(err.message);
+      res.status(400).send(resp.error(err));
+    }
   });
 
   app.listen(port, host, () => {
